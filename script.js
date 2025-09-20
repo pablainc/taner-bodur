@@ -16,16 +16,24 @@ imageUpload.addEventListener('change', (e) => {
         reader.onload = function(event) {
             faceImage.src = event.target.result;
             faceImage.onload = () => {
-                gameCanvas.width = faceImage.width;
-                gameCanvas.height = faceImage.height;
+                // Canvas boyutunu, fotoğrafın ekran boyutuna sığacak şekilde ayarla
+                const containerWidth = gameCanvas.parentElement.clientWidth;
+                const ratio = faceImage.width / faceImage.height;
+
+                // Canvas'ı konteynerin genişliğine sabitle
+                gameCanvas.width = containerWidth;
+                gameCanvas.height = containerWidth / ratio;
+
+                // Fotoğrafı canvas'a çiz
                 ctx.drawImage(faceImage, 0, 0, gameCanvas.width, gameCanvas.height);
                 faceLoaded = true;
-                messageEl.textContent = 'Şimdi tokat atmak için fotoğrafa tıklayın!';
+                messageEl.textContent = 'Şimdi tokat atmak için fotoğrafa dokunun!';
             };
         };
         reader.readAsDataURL(file);
     }
 });
+
 
 gameCanvas.addEventListener('click', (e) => {
     if (!faceLoaded || slapEffectActive) {
@@ -163,4 +171,5 @@ function deactivateSlapEffect() {
     particles = [];
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     ctx.drawImage(faceImage, 0, 0, gameCanvas.width, gameCanvas.height);
+
 }
